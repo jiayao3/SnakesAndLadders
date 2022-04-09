@@ -20,6 +20,7 @@ public class Die extends Actor
     if (getIdVisible() == 6)
     {
       setActEnabled(false);
+
       np.startMoving(nb);
     }
   }
