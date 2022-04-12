@@ -21,9 +21,7 @@ public class NavigationPane extends GameGrid
       {
         Monitor.putSleep();
         handBtn.show(1);
-        for (int i=0; i<Integer.parseInt(properties.getProperty("dice.count")); i++) {
-       roll(getDieValue());
-        }
+        roll(getDieValue());
         delay(1000);
         handBtn.show(0);
       }
@@ -83,7 +81,8 @@ public class NavigationPane extends GameGrid
   private Properties properties;
   private java.util.List<java.util.List<Integer>> dieValues = new ArrayList<>();
   private GamePlayCallback gamePlayCallback;
-
+  private int nb = 0;
+  
   NavigationPane(Properties properties)
   {
     this.properties = properties;
@@ -153,6 +152,7 @@ public class NavigationPane extends GameGrid
         int tag = customGGButton.getTag();
         System.out.println("manual die button clicked - tag: " + tag);
         properties.setProperty("dice.count", Integer.toString(tag));
+        
         prepareBeforeRoll();
         roll(tag);
       }
@@ -183,9 +183,10 @@ public class NavigationPane extends GameGrid
     }
     int currentRound = nbRolls / (gp.getNumberOfPlayers() * rollPerPlayer);
     int playerIndex = (nbRolls / rollPerPlayer) % gp.getNumberOfPlayers();
+    int currentRoll = Math.floorDiv(nbRolls, gp.getNumberOfPlayers());
     System.out.println(currentRound + "   " + playerIndex);
     if (dieValues.get(playerIndex).size() > currentRound * rollPerPlayer) {
-      return dieValues.get(playerIndex).get(currentRound);
+      return dieValues.get(playerIndex).get(currentRound + currentRoll);
     }
     return RANDOM_ROLL_TAG;
   }
@@ -311,11 +312,11 @@ public class NavigationPane extends GameGrid
   }
 
   void startMoving(int nb)
-  {
-
+  {	
+      nbRolls += Integer.parseInt(properties.getProperty("dice.count"));
 	    showStatus("Moving...");
 	    showPips("Pips: " + nb);
-	    showScore("# Rolls: " + (++nbRolls));
+	    showScore("# Rolls: " + (nbRolls));
 	    gp.getPuppet().go(nb);
   }
 
@@ -332,17 +333,18 @@ public class NavigationPane extends GameGrid
   {
     System.out.println("hand button clicked");
     prepareBeforeRoll();
+    
     roll(getDieValue());
     
   }
 
   private void roll(int rollNumber)
   {
-    int nb = rollNumber;
+      int nb = rollNumber;
     // hello
     if (rollNumber == RANDOM_ROLL_TAG) {
-		      nb = ServicesRandom.get().nextInt(6) + 1;
-		    }
+	    nb = ServicesRandom.get().nextInt(6) + 1;
+    }
     showStatus("Rolling...");
     showPips("");
     removeActors(Die.class);
