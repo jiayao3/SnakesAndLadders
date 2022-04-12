@@ -21,7 +21,7 @@ public class NavigationPane extends GameGrid
       {
         Monitor.putSleep();
         handBtn.show(1);
-        roll(getDieValue());
+        rolling(getDieValue());
         delay(1000);
         handBtn.show(0);
       }
@@ -152,9 +152,7 @@ public class NavigationPane extends GameGrid
         int tag = customGGButton.getTag();
         System.out.println("manual die button clicked - tag: " + tag);
         properties.setProperty("dice.count", Integer.toString(tag));
-        
-        prepareBeforeRoll();
-        roll(tag);
+        rolling(tag);
       }
     }
   }
@@ -332,15 +330,13 @@ public class NavigationPane extends GameGrid
   public void buttonClicked(GGButton btn)
   {
     System.out.println("hand button clicked");
-    prepareBeforeRoll();
-    
-    roll(getDieValue());
+    rolling(getDieValue());
     
   }
 
   private void roll(int rollNumber)
   {
-      int nb = rollNumber;
+    int nb = rollNumber;
     // hello
     if (rollNumber == RANDOM_ROLL_TAG) {
 	    nb = ServicesRandom.get().nextInt(6) + 1;
@@ -363,4 +359,13 @@ public class NavigationPane extends GameGrid
   public void checkAuto() {
     if (isAuto) Monitor.wakeUp();
   }
+  
+  public void rolling(int rollNumber) {
+      int numDice = Integer.parseInt(properties.getProperty("dice.count"));
+      for (int i=0; i < numDice; i++) {
+	      prepareBeforeRoll();
+	      roll(rollNumber);
+      }
+  }
 }
+
