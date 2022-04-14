@@ -24,5 +24,4 @@ public class Die extends Actor
       np.startMoving(nb);
     }
   }
-
 }

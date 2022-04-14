@@ -81,7 +81,7 @@ public class NavigationPane extends GameGrid
   private Properties properties;
   private java.util.List<java.util.List<Integer>> dieValues = new ArrayList<>();
   private GamePlayCallback gamePlayCallback;
-  private int nb = 0;
+  private int currentStep = 0;
   
   NavigationPane(Properties properties)
   {
@@ -152,7 +152,6 @@ public class NavigationPane extends GameGrid
         int tag = customGGButton.getTag();
         System.out.println("manual die button clicked - tag: " + tag);
         properties.setProperty("dice.count", Integer.toString(tag));
-        rolling(tag);
       }
     }
   }
@@ -172,21 +171,6 @@ public class NavigationPane extends GameGrid
     die4Button.addButtonListener(manualDieButton);
     die5Button.addButtonListener(manualDieButton);
     die6Button.addButtonListener(manualDieButton);
-  }
-
-  private int getDieValue() {
-    int rollPerPlayer = Integer.parseInt(properties.getProperty("dice.count"));
-    if (dieValues == null) {
-      return RANDOM_ROLL_TAG;
-    }
-    int currentRound = nbRolls / (gp.getNumberOfPlayers() * rollPerPlayer);
-    int playerIndex = (nbRolls / rollPerPlayer) % gp.getNumberOfPlayers();
-    int currentRoll = Math.floorDiv(nbRolls, gp.getNumberOfPlayers());
-    System.out.println(currentRound + "   " + playerIndex);
-    if (dieValues.get(playerIndex).size() > currentRound * rollPerPlayer) {
-      return dieValues.get(playerIndex).get(currentRound + currentRoll);
-    }
-    return RANDOM_ROLL_TAG;
   }
 
   void createGui()
@@ -309,43 +293,11 @@ public class NavigationPane extends GameGrid
     }
   }
 
-  void startMoving(int nb)
-  {	
-      nbRolls += Integer.parseInt(properties.getProperty("dice.count"));
-	    showStatus("Moving...");
-	    showPips("Pips: " + nb);
-	    showScore("# Rolls: " + (nbRolls));
-	    gp.getPuppet().go(nb);
-  }
-
-  void prepareBeforeRoll() {
-    handBtn.setEnabled(false);
-    if (isGameOver)  // First click after game over
-    {
-      isGameOver = false;
-      nbRolls = 0;
-    }
-  }
-
   public void buttonClicked(GGButton btn)
   {
     System.out.println("hand button clicked");
     rolling(getDieValue());
     
-  }
-
-  private void roll(int rollNumber)
-  {
-    int nb = rollNumber;
-    // hello
-    if (rollNumber == RANDOM_ROLL_TAG) {
-	    nb = ServicesRandom.get().nextInt(6) + 1;
-    }
-    showStatus("Rolling...");
-    showPips("");
-    removeActors(Die.class);
-    Die die = new Die(nb, this);
-    addActor(die, dieBoardLocation);
   }
 
   public void buttonPressed(GGButton btn)
@@ -360,12 +312,77 @@ public class NavigationPane extends GameGrid
     if (isAuto) Monitor.wakeUp();
   }
   
-  public void rolling(int rollNumber) {
-      int numDice = Integer.parseInt(properties.getProperty("dice.count"));
-      for (int i=0; i < numDice; i++) {
-	      prepareBeforeRoll();
-	      roll(rollNumber);
+  void startMoving(int nb)
+  {
+      showStatus("Moving...");
+      showPips("Pips: " + nb);
+      showScore("# Rolls: " + (nbRolls++));
+      gp.getPuppet().go(nb);
+  }
+
+  void prepareBeforeRoll() {
+    handBtn.setEnabled(false);
+    if (isGameOver)  // First click after game over
+    {
+      isGameOver = false;
+      nbRolls = 0;
+    }
+  }
+  
+  private ArrayList<Integer> getDieValue() {
+      ArrayList<Integer> rolls = new ArrayList<Integer>();
+      int rollPerPlayer = Integer.parseInt(properties.getProperty("dice.count"));
+      if (dieValues == null) {
+        for (int i = 0; i < rollPerPlayer; i++) {
+          rolls.add(RANDOM_ROLL_TAG);
+        }
+        return rolls;
       }
+      int currentRound = nbRolls / (gp.getNumberOfPlayers() * rollPerPlayer);
+      int playerIndex = (nbRolls / rollPerPlayer) % gp.getNumberOfPlayers();
+
+      int step = currentRound;
+      if (currentRound != 0) {
+        step++;
+      }
+      for (int i = 0; i < rollPerPlayer; i++) {
+        if (dieValues.get(playerIndex).size() > currentRound + i) {
+            rolls.add(dieValues.get(playerIndex).get(step + i));
+        } else {
+            rolls.add(RANDOM_ROLL_TAG);
+        }
+      }
+      return rolls;
+    }
+  
+  private void roll(int rollNumber)
+  {
+    int nb = rollNumber;
+    // hello
+    if (rollNumber == RANDOM_ROLL_TAG) {
+	    nb = ServicesRandom.get().nextInt(6) + 1;
+    }
+    showStatus("Rolling...");
+    showPips("");
+
+    Die die = new Die(nb, this);
+    addActor(die, dieBoardLocation);
+  }
+  
+  public void rolling(ArrayList<Integer> rollNumber) {
+      int numDice = Integer.parseInt(properties.getProperty("dice.count"));
+      currentStep = 0;
+      removeActors(Die.class);
+      for (int i = 0; i < numDice; i++) {
+	prepareBeforeRoll();
+        roll(rollNumber.get(i));
+        currentStep += rollNumber.get(i);
+        System.out.println(rollNumber.get(i));
+      }
+  }
+
+  public int getCurrentStep() {
+    return currentStep;
   }
 }
 
