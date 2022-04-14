@@ -20,9 +20,9 @@ public class NavigationPane extends GameGrid
       while (true)
       {
         Monitor.putSleep();
+        removeActors(Die.class);
         handBtn.show(1);
-        roll(getDieValue());
-        delay(1000);
+        rolling();
         handBtn.show(0);
       }
     }
@@ -81,8 +81,7 @@ public class NavigationPane extends GameGrid
   private Properties properties;
   private java.util.List<java.util.List<Integer>> dieValues = new ArrayList<>();
   private GamePlayCallback gamePlayCallback;
-  private int nb = 0;
-  
+
   NavigationPane(Properties properties)
   {
     this.properties = properties;
@@ -151,10 +150,8 @@ public class NavigationPane extends GameGrid
         CustomGGButton customGGButton = (CustomGGButton) ggButton;
         int tag = customGGButton.getTag();
         System.out.println("manual die button clicked - tag: " + tag);
-        properties.setProperty("dice.count", Integer.toString(tag));
-        
         prepareBeforeRoll();
-        roll(tag);
+        rolling();
       }
     }
   }
@@ -183,11 +180,15 @@ public class NavigationPane extends GameGrid
     }
     int currentRound = nbRolls / (gp.getNumberOfPlayers() * rollPerPlayer);
     int playerIndex = (nbRolls / rollPerPlayer) % gp.getNumberOfPlayers();
-    int currentRoll = Math.floorDiv(nbRolls, gp.getNumberOfPlayers());
-    System.out.println(currentRound + "   " + playerIndex);
-    if (dieValues.get(playerIndex).size() > currentRound * rollPerPlayer) {
-      return dieValues.get(playerIndex).get(currentRound + currentRoll);
+    int currentRoll = nbRolls % (rollPerPlayer);
+    int currentMove = currentRound + currentRoll;
+    if (currentRound > 0) {
+      currentMove++;
     }
+    if (dieValues.get(playerIndex).size() > currentRound + currentRoll) {
+      return dieValues.get(playerIndex).get(currentMove);
+    }
+
     return RANDOM_ROLL_TAG;
   }
 
@@ -203,16 +204,11 @@ public class NavigationPane extends GameGrid
       public void buttonChecked(GGCheckButton button, boolean checked)
       {
         isAuto = checked;
-        gp.getPuppet().setAuto(checked);
-        if (isAuto) {
+        for (Puppet puppet: gp.getAllPuppets()) {
+          puppet.setAuto(isAuto);
+        }
+        if (isAuto){
           Monitor.wakeUp();
-          
-          properties.setProperty("autorun", "true");
-          System.out.println("autorun");
-        } else {
-          Monitor.wakeUp();
-          properties.setProperty("autorun", "false");
-          System.out.println("no autorun");
         }
       }
     });
@@ -312,12 +308,11 @@ public class NavigationPane extends GameGrid
   }
 
   void startMoving(int nb)
-  {	
-      nbRolls += Integer.parseInt(properties.getProperty("dice.count"));
-	    showStatus("Moving...");
-	    showPips("Pips: " + nb);
-	    showScore("# Rolls: " + (nbRolls));
-	    gp.getPuppet().go(nb);
+  {
+    showStatus("Moving...");
+    showPips("Pips: " + nb);
+    showScore("# Rolls: " + (nbRolls));
+    gp.getPuppet().go(nb);
   }
 
   void prepareBeforeRoll() {
@@ -333,23 +328,22 @@ public class NavigationPane extends GameGrid
   {
     System.out.println("hand button clicked");
     prepareBeforeRoll();
-    
-    roll(getDieValue());
-    
+    rolling();
   }
 
   private void roll(int rollNumber)
   {
-      int nb = rollNumber;
-    // hello
+    int nb = rollNumber;
     if (rollNumber == RANDOM_ROLL_TAG) {
-	    nb = ServicesRandom.get().nextInt(6) + 1;
+      nb = ServicesRandom.get().nextInt(6) + 1;
     }
     showStatus("Rolling...");
     showPips("");
-    removeActors(Die.class);
+
     Die die = new Die(nb, this);
     addActor(die, dieBoardLocation);
+    delay(1000);
+    nbRolls++;
   }
 
   public void buttonPressed(GGButton btn)
@@ -362,5 +356,14 @@ public class NavigationPane extends GameGrid
 
   public void checkAuto() {
     if (isAuto) Monitor.wakeUp();
+  }
+
+  public void rolling() {
+    int totalMove = 0;
+    for (int i = 0; i < Integer.parseInt(properties.getProperty("dice.count")); i++) {
+      totalMove += getDieValue();
+      roll(getDieValue());
+    }
+    startMoving(totalMove);
   }
 }
