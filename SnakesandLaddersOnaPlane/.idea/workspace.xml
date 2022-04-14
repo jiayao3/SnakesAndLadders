@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e5032bbf-6a41-4e1d-98f0-197128dfab24" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/snakeladder/game/NavigationPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/snakeladder/game/NavigationPane.java" afterDir="false" />
-    </list>
+    <list default="true" id="7f74b3d8-6529-4c2e-9271-953ddc5246bc" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-  </component>
-  <component name="ProjectId" id="27gDVBZsj0HHEW1kQ88D5A8eirC" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="27nqo4L7nmore0iXUTg6FTEX3DT" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -21,7 +15,6 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../SnakesandLaddersOnaPlane" />
   </component>
   <component name="RunManager">
     <configuration name="FrameTutorial" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -46,11 +39,11 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e5032bbf-6a41-4e1d-98f0-197128dfab24" name="Changes" comment="" />
-      <created>1649732858466</created>
+      <changelist id="7f74b3d8-6529-4c2e-9271-953ddc5246bc" name="Changes" comment="" />
+      <created>1649966370069</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1649732858466</updated>
+      <updated>1649966370069</updated>
     </task>
     <servers />
   </component>
