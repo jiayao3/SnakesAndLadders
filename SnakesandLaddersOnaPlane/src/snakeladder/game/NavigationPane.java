@@ -7,6 +7,7 @@ import snakeladder.game.custom.CustomGGButton;
 import snakeladder.utility.ServicesRandom;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 @SuppressWarnings("serial")
@@ -81,6 +82,7 @@ public class NavigationPane extends GameGrid
   private Properties properties;
   private java.util.List<java.util.List<Integer>> dieValues = new ArrayList<>();
   private GamePlayCallback gamePlayCallback;
+  private ArrayList<HashMap<Integer, Integer>> rolled = new ArrayList<HashMap<Integer, Integer>> ();
 
   NavigationPane(Properties properties)
   {
@@ -100,6 +102,9 @@ public class NavigationPane extends GameGrid
     setNbVertCells(600);
     doRun();
     new SimulatedPlayer().start();
+    for (int i = 0;  i < Integer.parseInt(properties.getProperty("players.count")); i++) {
+	rolled.add(new HashMap<Integer, Integer> ());
+    }
   }
 
   void setupDieValues() {
@@ -178,14 +183,17 @@ public class NavigationPane extends GameGrid
     if (dieValues == null) {
       return RANDOM_ROLL_TAG;
     }
-    int currentRound = nbRolls / (gp.getNumberOfPlayers() * rollPerPlayer);
-    int playerIndex = (nbRolls / rollPerPlayer) % gp.getNumberOfPlayers();
-    int currentRoll = nbRolls % (rollPerPlayer);
-    int currentMove = currentRound + currentRoll;
-    if (currentRound > 0) {
-      currentMove++;
-    }
-    if (dieValues.get(playerIndex).size() > currentRound + currentRoll) {
+    int currentRound = Math.floorDiv(nbRolls, (gp.getNumberOfPlayers() * rollPerPlayer));
+    int playerIndex = Math.floorDiv(nbRolls, rollPerPlayer) % gp.getNumberOfPlayers();
+    int currentRoll = nbRolls % rollPerPlayer;
+    int currentMove = currentRound * rollPerPlayer + currentRoll;
+    if (dieValues.get(playerIndex).size() > currentMove) {
+	/*
+	System.out.println("round: " + currentRound);
+	System.out.println("player: " + playerIndex);
+	System.out.println(currentMove);
+	*/
+
       return dieValues.get(playerIndex).get(currentMove);
     }
 
@@ -361,9 +369,48 @@ public class NavigationPane extends GameGrid
   public void rolling() {
     int totalMove = 0;
     for (int i = 0; i < Integer.parseInt(properties.getProperty("dice.count")); i++) {
-      totalMove += getDieValue();
-      roll(getDieValue());
+	int dieValue = getDieValue();
+        totalMove += dieValue;
+        roll(dieValue);
     }
+    
+    String currentPuppetName = gp.getPuppet().getPuppetName();
+    int currentPuppet = Integer.parseInt(currentPuppetName.substring(currentPuppetName.length() - 1)) - 1;
+    if (rolled.get(currentPuppet).get(totalMove) == null) {
+      rolled.get(currentPuppet).put(totalMove, 1);
+    } else {
+      rolled.get(currentPuppet).put(totalMove, rolled.get(currentPuppet).get(totalMove) + 1);
+    }
+
     startMoving(totalMove);
+    printStat(rolled);
+    printTraverse();
+  }
+  
+  public int getDiceNum() {
+      return Integer.parseInt(properties.getProperty("dice.count"));
+  }
+  
+  public void printStat(ArrayList<HashMap<Integer, Integer>> rolled) {
+      String currentPuppetName = gp.getPuppet().getPuppetName();
+      int currentPuppet = Integer.parseInt(currentPuppetName.substring(currentPuppetName.length() - 1)) - 1;
+      System.out.print(gp.getPuppet().getPuppetName() +" rolled: ");
+      int i = 0;
+      for (Integer roll : rolled.get(currentPuppet).keySet()) {
+        if (i != 0) {
+            System.out.print(", ");
+        }
+	System.out.print(roll + "-" + rolled.get(currentPuppet).get(roll));
+        i++;
+      }
+      System.out.println("");
+  }
+  
+  public void printTraverse() {
+      int up = gp.getPuppet().getUpCount();
+      int down = gp.getPuppet().getDownCount();
+
+      System.out.print(gp.getPuppet().getPuppetName() + " traversed: ");
+      System.out.println("up-" + up + ", " + "down-" + down);
   }
 }

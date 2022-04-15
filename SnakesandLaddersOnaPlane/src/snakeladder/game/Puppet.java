@@ -14,6 +14,9 @@ public class Puppet extends Actor
   private int dy;
   private boolean isAuto;
   private String puppetName;
+  private boolean detectMin;
+  private int upCount = 0;
+  private int downCount = 0;
 
   Puppet(GamePane gp, NavigationPane np, String puppetImage)
   {
@@ -45,6 +48,9 @@ public class Puppet extends Actor
       cellIndex = 0;
       setLocation(gamePane.startLocation);
     }
+    if (nbSteps == navigationPane.getDiceNum()) {
+	detectMin = true;
+    }
     this.nbSteps = nbSteps;
     setActEnabled(true);
   }
@@ -61,23 +67,32 @@ public class Puppet extends Actor
 
   private void moveToNextCell()
   {
-    int tens = cellIndex / 10;
-    int ones = cellIndex - tens * 10;
-    if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
-    {
-      if (ones == 0 && cellIndex > 0)
-        setLocation(new Location(getX(), getY() - 1));
-      else
-        setLocation(new Location(getX() + 1, getY()));
+    boolean valid = true;
+    for (int i = 0; i < gamePane.getNumberOfPlayers(); i++) {
+        if (cellIndex + 1 == gamePane.getAllPuppetsCell().get(i) && nbSteps == 1) {
+	      valid = false;
+	}
     }
-    else     // Cells starting left 20, 40, .. 100
-    {
-      if (ones == 0)
-        setLocation(new Location(getX(), getY() - 1));
-      else
-        setLocation(new Location(getX() - 1, getY()));
+    if (valid) {
+	    int tens = cellIndex / 10;
+	    int ones = cellIndex - tens * 10;
+	    if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
+	    {
+	      if (ones == 0 && cellIndex > 0)
+	        setLocation(new Location(getX(), getY() - 1));
+	      else
+	        setLocation(new Location(getX() + 1, getY()));
+	    }
+	    else     // Cells starting left 20, 40, .. 100
+	    {
+	      if (ones == 0)
+	        setLocation(new Location(getX(), getY() - 1));
+	      else
+	        setLocation(new Location(getX() - 1, getY()));
+	    }
+	    cellIndex++;	
     }
-    cellIndex++;
+    
   }
 
   public void act()
@@ -99,7 +114,6 @@ public class Puppet extends Actor
       int x = gamePane.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
-
       // Check end of connection
       if ((dy > 0 && (y - gamePane.toPoint(currentCon.locEnd).y) > 0)
         || (dy < 0 && (y - gamePane.toPoint(currentCon.locEnd).y) < 0))
@@ -118,8 +132,8 @@ public class Puppet extends Actor
     // Normal movement
     if (nbSteps > 0)
     {
-      moveToNextCell();
 
+      moveToNextCell();
       if (cellIndex == 100)  // Game over
       {
         setActEnabled(false);
@@ -133,19 +147,37 @@ public class Puppet extends Actor
         // Check if on connection start
         if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
         {
-          gamePane.setSimulationPeriod(50);
-          y = gamePane.toPoint(currentCon.locStart).y;
-          if (currentCon.locEnd.y > currentCon.locStart.y)
-            dy = gamePane.animationStep;
-          else
-            dy = -gamePane.animationStep;
+          
           if (currentCon instanceof Snake)
           {
-            navigationPane.showStatus("Digesting...");
-            navigationPane.playSound(GGSound.MMM);
+            if (detectMin == false) {
+        	downCount++;
+                gamePane.setSimulationPeriod(50);
+                y = gamePane.toPoint(currentCon.locStart).y;
+                if (currentCon.locEnd.y > currentCon.locStart.y)
+                    dy = gamePane.animationStep;
+                else
+                    dy = -gamePane.animationStep;
+                navigationPane.showStatus("Digesting...");
+                navigationPane.playSound(GGSound.MMM);
+                
+            }
+            else {
+        	currentCon = null;
+        	detectMin = false;
+                setActEnabled(false);
+                navigationPane.prepareRoll(cellIndex);
+            }
           }
           else
           {
+            upCount++;
+            gamePane.setSimulationPeriod(50);
+            y = gamePane.toPoint(currentCon.locStart).y;
+            if (currentCon.locEnd.y > currentCon.locStart.y)
+                dy = gamePane.animationStep;
+            else
+                dy = -gamePane.animationStep;
             navigationPane.showStatus("Climbing...");
             navigationPane.playSound(GGSound.BOING);
           }
@@ -157,6 +189,22 @@ public class Puppet extends Actor
         }
       }
     }
-  }
 
+  }
+  
+  public int getCurrentCell() {
+      return cellIndex;
+  }
+  
+  public Connection getCurrentCon() {
+      return currentCon;
+  }
+  
+  public int getUpCount() {
+      return upCount;
+  }
+  
+  public int getDownCount() {
+      return downCount;
+  }
 }

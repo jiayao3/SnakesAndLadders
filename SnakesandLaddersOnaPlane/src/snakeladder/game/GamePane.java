@@ -129,5 +129,14 @@ public class GamePane extends GameGrid
     double b = (double)(y1 * x0 - y0 * x1) / (y1 - y0);
     return (int)(a * y + b);
   }
+  
+  List<Integer> getAllPuppetsCell() {
+      List<Integer> cells = new ArrayList<Integer>(); 
+      for (int i = 0; i < getNumberOfPlayers(); i++) {
+	  cells.add(puppets.get(i).getCurrentCell());
+      }
+      return cells;
+    }
 
+    
 }
