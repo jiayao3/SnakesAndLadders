@@ -1,6 +1,7 @@
 package snakeladder.game;
 
 import ch.aplu.jgamegrid.*;
+import ch.aplu.util.Monitor;
 import snakeladder.utility.PropertiesLoader;
 
 import java.util.ArrayList;
@@ -87,6 +88,7 @@ public class GamePane extends GameGrid
   }
 
   void resetAllPuppets() {
+
     for (Puppet puppet: puppets) {
       puppet.resetToStartingPoint();
     }

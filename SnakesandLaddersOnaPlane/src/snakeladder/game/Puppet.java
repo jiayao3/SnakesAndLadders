@@ -60,7 +60,7 @@ public class Puppet extends Actor
   void resetToStartingPoint() {
     cellIndex = 0;
     setLocation(gamePane.startLocation);
-    setActEnabled(true);
+    setActEnabled(false);
   }
 
   int getCellIndex() {

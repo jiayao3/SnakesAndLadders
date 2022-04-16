@@ -21,7 +21,6 @@ public class NavigationPane extends GameGrid
       while (true)
       {
         Monitor.putSleep();
-        removeActors(Die.class);
         handBtn.show(1);
         rolling();
         handBtn.show(0);
@@ -319,7 +318,7 @@ public class NavigationPane extends GameGrid
     }
     else
     {
-	moveOpponent();
+      moveOpponent();
       playSound(GGSound.CLICK);
       showStatus("Done. Click the hand!");
       String result = gp.getPuppet().getPuppetName() + " - pos: " + currentIndex;
@@ -371,7 +370,7 @@ public class NavigationPane extends GameGrid
     removeActors(Die.class);
     Die die = new Die(nb, this);
     addActor(die, dieBoardLocation);
-    delay(1000);
+    delay(1);
     nbRolls++;
   }
 
