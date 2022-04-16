@@ -77,6 +77,10 @@ public class GamePane extends GameGrid
   void switchToNextPuppet() {
     currentPuppetIndex = (currentPuppetIndex + 1) % numberOfPlayers;
   }
+  
+  void switchPuppetTo(int index) {
+      currentPuppetIndex = index;
+  }
 
   List<Puppet> getAllPuppets() {
     return puppets;
@@ -133,10 +137,21 @@ public class GamePane extends GameGrid
   List<Integer> getAllPuppetsCell() {
       List<Integer> cells = new ArrayList<Integer>(); 
       for (int i = 0; i < getNumberOfPlayers(); i++) {
-	  cells.add(puppets.get(i).getCurrentCell());
+	  cells.add(puppets.get(i).getCellIndex());
       }
       return cells;
     }
 
-    
+  Puppet getPuppetOnCell(int cell) {
+      for(Puppet puppet: getAllPuppets()) {
+	  if (cell == puppet.getCellIndex() && puppet.getPuppetName() != this.getPuppet().getPuppetName()) {
+	      return puppet;
+	  }
+      }
+      return null;
+  }
+  
+  public int getCurrentPuppetIndex() {
+      return currentPuppetIndex;
+  }
 }

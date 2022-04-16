@@ -17,6 +17,7 @@ public class Puppet extends Actor
   private boolean detectMin;
   private int upCount = 0;
   private int downCount = 0;
+  private boolean backward = false;
 
   Puppet(GamePane gp, NavigationPane np, String puppetImage)
   {
@@ -25,6 +26,8 @@ public class Puppet extends Actor
     this.navigationPane = np;
   }
 
+  
+  
   public boolean isAuto() {
     return isAuto;
   }
@@ -48,7 +51,7 @@ public class Puppet extends Actor
       cellIndex = 0;
       setLocation(gamePane.startLocation);
     }
-    if (nbSteps == navigationPane.getDiceNum()) {
+    if (nbSteps == navigationPane.getDiceNum() && !backward) {
 	detectMin = true;
     }
     this.nbSteps = nbSteps;
@@ -67,32 +70,52 @@ public class Puppet extends Actor
 
   private void moveToNextCell()
   {
-    boolean valid = true;
-    for (int i = 0; i < gamePane.getNumberOfPlayers(); i++) {
-        if (cellIndex + 1 == gamePane.getAllPuppetsCell().get(i) && nbSteps == 1) {
-	      valid = false;
-	}
-    }
-    if (valid) {
-	    int tens = cellIndex / 10;
-	    int ones = cellIndex - tens * 10;
-	    if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
-	    {
-	      if (ones == 0 && cellIndex > 0)
-	        setLocation(new Location(getX(), getY() - 1));
-	      else
-	        setLocation(new Location(getX() + 1, getY()));
-	    }
-	    else     // Cells starting left 20, 40, .. 100
-	    {
-	      if (ones == 0)
-	        setLocation(new Location(getX(), getY() - 1));
-	      else
-	        setLocation(new Location(getX() - 1, getY()));
-	    }
-	    cellIndex++;	
-    }
-    
+
+      int tens = cellIndex / 10;
+      int ones = cellIndex - tens * 10;
+      if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
+      {
+	  if (ones == 0 && cellIndex > 0)
+	      setLocation(new Location(getX(), getY() - 1));
+	  else
+	      setLocation(new Location(getX() + 1, getY()));
+      }
+      else     // Cells starting left 20, 40, .. 100
+      {
+	  if (ones == 0)
+	      setLocation(new Location(getX(), getY() - 1));
+	  else
+	      setLocation(new Location(getX() - 1, getY()));
+      }
+      cellIndex++;
+  }
+  
+  public void moveToPreviousCell() {
+      int tens = cellIndex / 10;
+      int ones = cellIndex - tens * 10;
+      System.out.println(tens +"  " + ones);
+      if (tens % 2 == 0 && ones != 0)     // Cells starting left 01, 21, .. 81
+      {
+	  if (ones == 1 && cellIndex > 0)
+	      setLocation(new Location(getX(), getY() + 1));
+	  else
+	      setLocation(new Location(getX() - 1, getY()));
+      }
+      else     // Cells starting left 20, 40, .. 100
+      {
+	  
+	  if (ones == 1 && cellIndex > 0) {
+	      setLocation(new Location(getX(), getY() + 1));
+	  }
+	      
+	  else {
+	      setLocation(new Location(getX() + 1, getY()));
+	      
+	  }
+      }
+      cellIndex--;
+      
+      setActEnabled(false);
   }
 
   public void act()
@@ -132,8 +155,9 @@ public class Puppet extends Actor
     // Normal movement
     if (nbSteps > 0)
     {
-
       moveToNextCell();
+
+
       if (cellIndex == 100)  // Game over
       {
         setActEnabled(false);
@@ -191,10 +215,7 @@ public class Puppet extends Actor
     }
 
   }
-  
-  public int getCurrentCell() {
-      return cellIndex;
-  }
+
   
   public Connection getCurrentCon() {
       return currentCon;
@@ -207,4 +228,6 @@ public class Puppet extends Actor
   public int getDownCount() {
       return downCount;
   }
+  
+
 }
