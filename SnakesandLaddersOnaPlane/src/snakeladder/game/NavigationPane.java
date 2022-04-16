@@ -102,19 +102,11 @@ public class NavigationPane extends GameGrid
     setNbVertCells(600);
     doRun();
     new SimulatedPlayer().start();
-    // create array of hashmap for each player
     for (int i = 0;  i < Integer.parseInt(properties.getProperty("players.count")); i++) {
 	rolled.add(new HashMap<Integer, Integer> ());
-<<<<<<< Updated upstream
-=======
-	for (int j = 1;  j < Integer.parseInt(properties.getProperty("dice.count")) * 6 + 1; j++) {
-	    rolled.get(i).put(j, 0);
-	}
->>>>>>> Stashed changes
     }
   }
 
-  // initial die value from property file
   void setupDieValues() {
     for (int i = 0; i < gp.getNumberOfPlayers(); i++) {
       java.util.List<Integer> dieValuesForPlayer = new ArrayList<>();
@@ -158,7 +150,6 @@ public class NavigationPane extends GameGrid
 
     @Override
     public void buttonClicked(GGButton ggButton) {
-<<<<<<< Updated upstream
       System.out.println("manual die button clicked");
       if (ggButton instanceof CustomGGButton) {
         CustomGGButton customGGButton = (CustomGGButton) ggButton;
@@ -166,33 +157,9 @@ public class NavigationPane extends GameGrid
         System.out.println("manual die button clicked - tag: " + tag);
         prepareBeforeRoll();
         rolling();
-=======
-	// when auto checked, roll number cannot be changed
-      if(isAuto) {
-	  System.out.println("Please uncheck auto checkbox before change dice number");
-      }
-      else {
-	      System.out.println("manual die button clicked");
-	      if (ggButton instanceof CustomGGButton) {
-	        CustomGGButton customGGButton = (CustomGGButton) ggButton;
-	        int tag = customGGButton.getTag();
-	        System.out.println("manual die button clicked - tag: " + tag);
-	        properties.setProperty("dice.count", Integer.toString(tag));
-	        for (int i = 0; i < Integer.parseInt(properties.getProperty("players.count")); i++) {
-	            for (int j = 1;  j < Integer.parseInt(properties.getProperty("dice.count")) * 6 + 1; j++) {
-	        	if (rolled.get(i).get(j) == null) {
-	        	    rolled.get(i).put(j, 0);
-	        	}
-	    	    }
-	        }
-      }
-
->>>>>>> Stashed changes
       }
     }
   }
-  
-  // add die button to the board
   void addDieButtons() {
     ManualDieButton manualDieButton = new ManualDieButton();
 
@@ -211,13 +178,11 @@ public class NavigationPane extends GameGrid
     die6Button.addButtonListener(manualDieButton);
   }
 
-  // get current die value from total number of rolls
   private int getDieValue() {
     int rollPerPlayer = Integer.parseInt(properties.getProperty("dice.count"));
     if (dieValues == null) {
       return RANDOM_ROLL_TAG;
     }
-    // calculation to find 
     int currentRound = Math.floorDiv(nbRolls, (gp.getNumberOfPlayers() * rollPerPlayer));
     int playerIndex = Math.floorDiv(nbRolls, rollPerPlayer) % gp.getNumberOfPlayers();
     int currentRoll = nbRolls % rollPerPlayer;
@@ -261,7 +226,6 @@ public class NavigationPane extends GameGrid
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
         isToggle = checked;
-        gp.connectionDirectionChange();
       }
     });
 

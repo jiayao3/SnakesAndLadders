@@ -138,26 +138,5 @@ public class GamePane extends GameGrid
       return cells;
     }
 
-<<<<<<< Updated upstream
     
-=======
-  Puppet getPuppetOnCell(int cell) {
-      for(Puppet puppet: getAllPuppets()) {
-	  if (cell == puppet.getCellIndex() && puppet.getPuppetName() != this.getPuppet().getPuppetName()) {
-	      return puppet;
-	  }
-      }
-      return null;
-  }
-  
-  public int getCurrentPuppetIndex() {
-      return currentPuppetIndex;
-  }
-  
-  public void connectionDirectionChange() {
-      for(Connection connection: connections) {
-	  connection.switchDirection();
-      }
-  }
->>>>>>> Stashed changes
 }
