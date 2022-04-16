@@ -17,7 +17,6 @@ public class Puppet extends Actor
   private boolean detectMin;
   private int upCount = 0;
   private int downCount = 0;
-  private boolean backward = false;
 
   Puppet(GamePane gp, NavigationPane np, String puppetImage)
   {
@@ -51,7 +50,7 @@ public class Puppet extends Actor
       cellIndex = 0;
       setLocation(gamePane.startLocation);
     }
-    if (nbSteps == navigationPane.getDiceNum() && !backward) {
+    if (nbSteps == navigationPane.getDiceNum()) {
 	detectMin = true;
     }
     this.nbSteps = nbSteps;

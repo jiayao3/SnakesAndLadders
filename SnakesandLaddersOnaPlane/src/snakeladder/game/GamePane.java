@@ -154,4 +154,10 @@ public class GamePane extends GameGrid
   public int getCurrentPuppetIndex() {
       return currentPuppetIndex;
   }
+  
+  public void connectionDirectionChange() {
+      for(Connection connection: connections) {
+	  connection.switchDirection();
+      }
+  }
 }

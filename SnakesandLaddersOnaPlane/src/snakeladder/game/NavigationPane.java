@@ -21,6 +21,7 @@ public class NavigationPane extends GameGrid
       while (true)
       {
         Monitor.putSleep();
+        removeActors(Die.class);
         handBtn.show(1);
         rolling();
         handBtn.show(0);
@@ -103,7 +104,7 @@ public class NavigationPane extends GameGrid
     new SimulatedPlayer().start();
     for (int i = 0;  i < Integer.parseInt(properties.getProperty("players.count")); i++) {
 	rolled.add(new HashMap<Integer, Integer> ());
-	for (int j = 0;  j < Integer.parseInt(properties.getProperty("dice.count")) * 6; j++) {
+	for (int j = 1;  j < Integer.parseInt(properties.getProperty("dice.count")) * 6 + 1; j++) {
 	    rolled.get(i).put(j, 0);
 	}
     }
@@ -152,28 +153,30 @@ public class NavigationPane extends GameGrid
 
     @Override
     public void buttonClicked(GGButton ggButton) {
-      if(isAuto) {
-	  System.out.println("Please uncheck auto checkbox before change dice number");
-      }
-      else {
-	      System.out.println("manual die button clicked");
+	if(isAuto) {
+		  System.out.println("Please uncheck auto checkbox before change dice number");
+	}
+	else {
+	    System.out.println("manual die button clicked");
 	      if (ggButton instanceof CustomGGButton) {
 	        CustomGGButton customGGButton = (CustomGGButton) ggButton;
 	        int tag = customGGButton.getTag();
 	        System.out.println("manual die button clicked - tag: " + tag);
 	        properties.setProperty("dice.count", Integer.toString(tag));
 	        for (int i = 0; i < Integer.parseInt(properties.getProperty("players.count")); i++) {
-	            for (int j = 0;  j < Integer.parseInt(properties.getProperty("dice.count")) * 6; j++) {
+	            for (int j = 1;  j < Integer.parseInt(properties.getProperty("dice.count")) * 6 + 1; j++) {
 	        	if (rolled.get(i).get(j) == null) {
 	        	    rolled.get(i).put(j, 0);
 	        	}
 	    	    }
-	        }
-      }
-
+	    }
+	} 
+      
       }
     }
   }
+  
+//add die button to the board
   void addDieButtons() {
     ManualDieButton manualDieButton = new ManualDieButton();
 
@@ -192,16 +195,19 @@ public class NavigationPane extends GameGrid
     die6Button.addButtonListener(manualDieButton);
   }
 
+//get current die value from total number of rolls
   private int getDieValue() {
     int rollPerPlayer = Integer.parseInt(properties.getProperty("dice.count"));
     if (dieValues == null) {
       return RANDOM_ROLL_TAG;
     }
+    
+ // calculation to find 
     int currentRound = Math.floorDiv(nbRolls, (gp.getNumberOfPlayers() * rollPerPlayer));
     int playerIndex = Math.floorDiv(nbRolls, rollPerPlayer) % gp.getNumberOfPlayers();
     int currentRoll = nbRolls % rollPerPlayer;
     int currentMove = currentRound * rollPerPlayer + currentRoll;
-    if (dieValues.get(playerIndex).size() > currentMove + 1) {
+    if (dieValues.get(playerIndex).size() > currentMove) {
 	/*
 	System.out.println("round: " + currentRound);
 	System.out.println("player: " + playerIndex);
@@ -240,6 +246,7 @@ public class NavigationPane extends GameGrid
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
         isToggle = checked;
+        gp.connectionDirectionChange();
       }
     });
 
@@ -312,7 +319,7 @@ public class NavigationPane extends GameGrid
     }
     else
     {
-      moveOpponent();
+	moveOpponent();
       playSound(GGSound.CLICK);
       showStatus("Done. Click the hand!");
       String result = gp.getPuppet().getPuppetName() + " - pos: " + currentIndex;
@@ -357,6 +364,7 @@ public class NavigationPane extends GameGrid
   private void roll(int rollNumber)
   {
     int nb = rollNumber;
+
     showStatus("Rolling...");
     showPips("");
     System.out.println(nb);
