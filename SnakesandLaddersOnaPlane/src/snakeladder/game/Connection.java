@@ -8,7 +8,8 @@ public abstract class Connection
   Location locEnd;
   int cellStart;
   int cellEnd;
-
+  
+  
   Connection(int cellStart, int cellEnd)
   {
     this.cellStart = cellStart;
@@ -40,5 +41,16 @@ public abstract class Connection
   }
   public double yLocationPercent(int locationCell) {
     return (double) locationCell / GamePane.NUMBER_VERTICAL_CELLS;
+  }
+  
+  public void switchDirection() {
+      int start = cellStart;
+      int end = cellEnd;
+      Location startLoc = locStart;
+      Location endLoc = locEnd;
+      this.cellStart = end;
+      this.cellEnd = start;
+      this.locEnd = startLoc;
+      this.locStart = endLoc;
   }
 }
