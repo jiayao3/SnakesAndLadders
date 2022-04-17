@@ -8,6 +8,7 @@ public abstract class Connection
   Location locEnd;
   int cellStart;
   int cellEnd;
+  boolean reverse = false;
   
   
   Connection(int cellStart, int cellEnd)
@@ -52,5 +53,15 @@ public abstract class Connection
       this.cellEnd = start;
       this.locEnd = startLoc;
       this.locStart = endLoc;
+      if (reverse) {
+	  reverse = false;
+      } else {
+	  reverse = true;
+      }
   }
+  
+  public boolean getReverse() {
+      return reverse;
+  }
+  
 }

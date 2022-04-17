@@ -25,8 +25,6 @@ public class Puppet extends Actor
     this.navigationPane = np;
   }
 
-  
-  
   public boolean isAuto() {
     return isAuto;
   }
@@ -174,7 +172,12 @@ public class Puppet extends Actor
           if (currentCon instanceof Snake)
           {
             if (detectMin == false) {
-        	downCount++;
+        	if (currentCon.getReverse()) {
+        	    upCount++;
+        	} else {
+        	    downCount++;
+        	}
+        	
                 gamePane.setSimulationPeriod(50);
                 y = gamePane.toPoint(currentCon.locStart).y;
                 if (currentCon.locEnd.y > currentCon.locStart.y)
@@ -194,7 +197,11 @@ public class Puppet extends Actor
           }
           else
           {
-            upCount++;
+              if (currentCon.getReverse()) {
+        	    downCount++;
+              } else {
+        	    upCount++;
+              }
             gamePane.setSimulationPeriod(50);
             y = gamePane.toPoint(currentCon.locStart).y;
             if (currentCon.locEnd.y > currentCon.locStart.y)

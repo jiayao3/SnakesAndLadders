@@ -162,4 +162,9 @@ public class GamePane extends GameGrid
 	  connection.switchDirection();
       }
   }
+  
+  public ArrayList<Connection> getAllConnection() {
+      return connections;
+  }
+  
 }
