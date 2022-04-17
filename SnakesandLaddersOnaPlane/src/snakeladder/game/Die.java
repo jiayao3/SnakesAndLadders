@@ -4,14 +4,10 @@ import ch.aplu.jgamegrid.Actor;
 
 public class Die extends Actor
 {
-  private NavigationPane np;
-  private int nb;
 
-  Die(int nb, NavigationPane np)
+  Die(int nb)
   {
     super("sprites/pips" + nb + ".gif", 7);
-    this.nb = nb;
-    this.np = np;
   }
 
   public void act()

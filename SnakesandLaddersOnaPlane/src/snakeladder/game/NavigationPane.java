@@ -373,7 +373,7 @@ public class NavigationPane extends GameGrid
     showPips("");
     System.out.println(nb);
     removeActors(Die.class);
-    Die die = new Die(nb, this);
+    Die die = new Die(nb);
     addActor(die, dieBoardLocation);
     delay(1000);
     nbRolls++;
