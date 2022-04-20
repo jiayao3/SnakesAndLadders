@@ -348,7 +348,7 @@ public class NavigationPane extends GameGrid
     showStatus("Rolling...");
     showPips("");
 
-    Die die = new Die(nb, this);
+    Die die = new Die(nb);
     addActor(die, dieBoardLocation);
     delay(1000);
     nbRolls++;
