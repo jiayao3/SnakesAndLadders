@@ -167,4 +167,57 @@ public class GamePane extends GameGrid
       return connections;
   }
   
+  
+  // return true if toggle
+  public boolean toggleDecision() {
+      Puppet puppet = null;
+      int countUp = 0;
+      int countDown = 0;
+      if (currentPuppetIndex == numberOfPlayers - 1) {
+	  puppet = puppets.get(0);
+      } else {
+	  puppet = puppets.get(currentPuppetIndex + 1);
+      }
+      int currentIndex = puppet.getCellIndex() + np.getDiceNum();
+      for (; currentIndex < puppet.getCellIndex() + np.getDiceNum() * 6 + 1; currentIndex++) {
+          for (Connection connection: connections) {
+              if (connection instanceof Snake) {
+                  if (!np.isToggle()) {
+                      if (connection.cellStart == currentIndex) {
+                          countDown++;
+                      }
+                  } else {
+                      if (connection.cellEnd == currentIndex) {
+            	      	  countUp++;
+            	      }
+                  }
+              } else {
+        	  if (!np.isToggle()) {
+        	      if (connection.cellStart == currentIndex) {
+        		  countUp++;
+        	      }
+        	  } else {
+        	      if (connection.cellEnd == currentIndex) {
+        		  countDown++;
+        	      }
+        	  }
+              }
+          }
+      }
+      System.out.println(puppet.getCellIndex() + "-" + currentIndex + ": " + countUp + "             " + countDown);
+      if (!np.isToggle()) {
+	  if(countUp > countDown) {
+	      return true;
+	  } else {
+	      return false;
+	  }
+      } else if (np.isToggle()){
+	  if (countUp < countDown) {
+	      return false;
+	  } else {
+	      return true;
+	  }
+      }
+      return np.isToggle();
+  }
 }

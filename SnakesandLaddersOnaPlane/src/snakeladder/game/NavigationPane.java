@@ -328,6 +328,13 @@ public class NavigationPane extends GameGrid
       showStatus("Done. Click the hand!");
       String result = gp.getPuppet().getPuppetName() + " - pos: " + currentIndex;
       showResult(result);
+      if (isAuto) {
+	  if (gp.toggleDecision()) {
+	      toggleCheck.setChecked(true);
+	  } else {
+	      toggleCheck.setChecked(false);
+	  }
+      }
       gp.switchToNextPuppet();
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
@@ -445,5 +452,9 @@ public class NavigationPane extends GameGrid
 
       System.out.print(gp.getPuppet().getPuppetName() + " traversed: ");
       System.out.println("up-" + up + ", " + "down-" + down);
+  }
+  
+  public boolean isToggle() {
+      return isToggle;
   }
 }

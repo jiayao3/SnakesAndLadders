@@ -234,6 +234,5 @@ public class Puppet extends Actor
   public int getDownCount() {
       return downCount;
   }
-  
 
 }
