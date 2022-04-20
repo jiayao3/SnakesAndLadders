@@ -163,6 +163,7 @@ public class Puppet extends Actor
       }
 
       nbSteps--;
+      
       if (nbSteps == 0)
       {
         // Check if on connection start
@@ -188,6 +189,7 @@ public class Puppet extends Actor
                 navigationPane.playSound(GGSound.MMM);
                 
             }
+            
             else {
         	currentCon = null;
         	detectMin = false;
@@ -195,6 +197,7 @@ public class Puppet extends Actor
                 navigationPane.prepareRoll(cellIndex);
             }
           }
+          
           else
           {
               if (currentCon.getReverse()) {
@@ -212,6 +215,7 @@ public class Puppet extends Actor
             navigationPane.playSound(GGSound.BOING);
           }
         }
+        
         else
         {
           setActEnabled(false);
@@ -219,7 +223,6 @@ public class Puppet extends Actor
         }
       }
     }
-
   }
 
   

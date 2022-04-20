@@ -168,56 +168,53 @@ public class GamePane extends GameGrid
   }
   
   
-  // return true if toggle
+  // return true to check toggle, false to uncheck toggle
   public boolean toggleDecision() {
       Puppet puppet = null;
-      int countUp = 0;
-      int countDown = 0;
+      int toggleScore = 0;
+      int noToggleScore = 0;
+      
       if (currentPuppetIndex == numberOfPlayers - 1) {
 	  puppet = puppets.get(0);
       } else {
 	  puppet = puppets.get(currentPuppetIndex + 1);
       }
+      
       int currentIndex = puppet.getCellIndex() + np.getDiceNum();
       for (; currentIndex < puppet.getCellIndex() + np.getDiceNum() * 6 + 1; currentIndex++) {
           for (Connection connection: connections) {
               if (connection instanceof Snake) {
-                  if (!np.isToggle()) {
-                      if (connection.cellStart == currentIndex) {
-                          countDown++;
-                      }
-                  } else {
-                      if (connection.cellEnd == currentIndex) {
-            	      	  countUp++;
-            	      }
+                  if (connection.cellStart == currentIndex) {
+                      noToggleScore++;
                   }
+                  else if (connection.cellEnd == currentIndex) {
+            	      toggleScore--;
+            	  }
               } else {
-        	  if (!np.isToggle()) {
-        	      if (connection.cellStart == currentIndex) {
-        		  countUp++;
-        	      }
-        	  } else {
-        	      if (connection.cellEnd == currentIndex) {
-        		  countDown++;
-        	      }
+        	  if (connection.cellStart == currentIndex) {
+        	      noToggleScore--;
+        	  } else if (connection.cellEnd == currentIndex) {
+        	      toggleScore++;
         	  }
               }
           }
       }
-      System.out.println(puppet.getCellIndex() + "-" + currentIndex + ": " + countUp + "             " + countDown);
+      
+      System.out.println(puppet.getCellIndex() + "-" + currentIndex + ": toggle: " + toggleScore + ", notoggle: " + noToggleScore);
+      
       if (!np.isToggle()) {
-	  if(countUp > countDown) {
+	  if(toggleScore >= noToggleScore) {
 	      return true;
 	  } else {
 	      return false;
 	  }
-      } else if (np.isToggle()){
-	  if (countUp < countDown) {
+      } else {
+	  if (toggleScore <= noToggleScore) {
 	      return false;
 	  } else {
 	      return true;
 	  }
       }
-      return np.isToggle();
+      
   }
 }
