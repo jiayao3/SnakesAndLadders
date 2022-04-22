@@ -11,7 +11,7 @@ import java.util.Properties;
 public class GamePane extends GameGrid
 {
   private NavigationPane np;
-  private int numberOfPlayers = 1;
+  private static int numberOfPlayers = 1;
   private int currentPuppetIndex = 0;
   private List<Puppet> puppets =  new ArrayList<>();
   private List<Boolean> playerManualMode;
@@ -93,7 +93,7 @@ public class GamePane extends GameGrid
     }
   }
 
-  public int getNumberOfPlayers() {
+  public static int getNumberOfPlayers() {
     return numberOfPlayers;
   }
 

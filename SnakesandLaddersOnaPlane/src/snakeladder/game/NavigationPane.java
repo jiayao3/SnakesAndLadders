@@ -79,16 +79,16 @@ public class NavigationPane extends GameGrid
   private boolean isToggle = false;
   private GGCheckButton toggleCheck =
           new GGCheckButton("Toggle Mode", YELLOW, TRANSPARENT, isToggle);
-  private int nbRolls = 0;
+  private static int nbRolls = 0;
   private volatile boolean isGameOver = true;
   private Properties properties;
-  private java.util.List<java.util.List<Integer>> dieValues = new ArrayList<>();
+  private DieController dieController;
   private GamePlayCallback gamePlayCallback;
-  private ArrayList<HashMap<Integer, Integer>> rolled = new ArrayList<HashMap<Integer, Integer>> ();
 
   NavigationPane(Properties properties)
   {
     this.properties = properties;
+    dieController = new DieController(properties);
     int numberOfDice =  //Number of six-sided dice
             (properties.getProperty("dice.count") == null)
                     ? 1  // default
@@ -103,34 +103,11 @@ public class NavigationPane extends GameGrid
     setNbHorzCells(200);
     setNbVertCells(600);
     doRun();
+    
     new SimulatedPlayer().start();
-    for (int i = 0;  i < Integer.parseInt(properties.getProperty("players.count")); i++) {
-	rolled.add(new HashMap<Integer, Integer> ());
-	for (int j = Integer.parseInt(properties.getProperty("dice.count"));  j < Integer.parseInt(properties.getProperty("dice.count")) * 6 + 1; j++) {
-	    rolled.get(i).put(j, 0);
-	}
-    }
   }
 
-  void setupDieValues() {
-    for (int i = 0; i < gp.getNumberOfPlayers(); i++) {
-      java.util.List<Integer> dieValuesForPlayer = new ArrayList<>();
-      if (properties.getProperty("die_values." + i) != null) {
-        String dieValuesString = properties.getProperty("die_values." + i);
-        String[] dieValueStrings = dieValuesString.split(",");
-        for (int j = 0; j < dieValueStrings.length; j++) {
-          dieValuesForPlayer.add(Integer.parseInt(dieValueStrings[j]));
-        }
-        dieValues.add(dieValuesForPlayer);
-      } else {
-        System.out.println("All players need to be set a die value for the full testing mode to run. " +
-                "Switching off the full testing mode");
-        dieValues = null;
-        break;
-      }
-    }
-    System.out.println("dieValues = " + dieValues);
-  }
+
 
   void setGamePlayCallback(GamePlayCallback gamePlayCallback) {
     this.gamePlayCallback = gamePlayCallback;
@@ -139,7 +116,7 @@ public class NavigationPane extends GameGrid
   void setGamePane(GamePane gp)
   {
     this.gp = gp;
-    setupDieValues();
+    dieController.setupDieValues();
   }
 
   class ManualDieButton implements GGButtonListener {
@@ -167,16 +144,11 @@ public class NavigationPane extends GameGrid
 	        System.out.println("manual die button clicked - tag: " + tag);
 	        properties.setProperty("dice.count", Integer.toString(tag));
 	    }
-	    rolled = new ArrayList<HashMap<Integer, Integer>> ();
-	    for (int i = 0;  i < Integer.parseInt(properties.getProperty("players.count")); i++) {
-		rolled.add(new HashMap<Integer, Integer> ());
-		for (int j = Integer.parseInt(properties.getProperty("dice.count"));  j < Integer.parseInt(properties.getProperty("dice.count")) * 6 + 1; j++) {
-		    rolled.get(i).put(j, 0);
-		}
-	    }
+	    dieController.rolledRecordChange();
       }
     }
   }
+  
   
 //add die button to the board
   void addDieButtons() {
@@ -197,30 +169,10 @@ public class NavigationPane extends GameGrid
     die6Button.addButtonListener(manualDieButton);
   }
 
-//get current die value from total number of rolls
-  private int getDieValue() {
-    int rollPerPlayer = Integer.parseInt(properties.getProperty("dice.count"));
-    if (dieValues == null) {
-      return RANDOM_ROLL_TAG;
-    }
+
+
     
- // calculation to find 
-    int currentRound = Math.floorDiv(nbRolls, (gp.getNumberOfPlayers() * rollPerPlayer));
-    int playerIndex = Math.floorDiv(nbRolls, rollPerPlayer) % gp.getNumberOfPlayers();
-    int currentRoll = nbRolls % rollPerPlayer;
-    int currentMove = currentRound * rollPerPlayer + currentRoll;
-    if (dieValues.get(playerIndex).size() > currentMove) {
-	/*
-	System.out.println("round: " + currentRound);
-	System.out.println("player: " + playerIndex);
-	System.out.println(currentMove);
-	*/
 
-      return dieValues.get(playerIndex).get(currentMove);
-    }
-
-    return RANDOM_ROLL_TAG;
-  }
 
   void createGui()
   {
@@ -318,7 +270,7 @@ public class NavigationPane extends GameGrid
       }
       gamePlayCallback.finishGameWithResults(nbRolls % gp.getNumberOfPlayers(), playerPositions);
       gp.resetAllPuppets();
-      printStat(rolled);
+      printStat(dieController.getRolled());
       printTraverse();
     }
     else
@@ -355,22 +307,36 @@ public class NavigationPane extends GameGrid
       }
     }
   }
-
+  
+  void prepareBeforeRoll() {
+	    handBtn.setEnabled(false);
+	    if (isGameOver)  // First click after game over
+	    {
+	      isGameOver = false;
+	      nbRolls = 0;
+	    }
+  }
+  
+  public void roll(int rollNumber)
+  {
+        int nb = rollNumber;
+  
+        showStatus("Rolling...");
+        showPips("");
+        System.out.println(nb);
+        removeActors(Die.class);
+        Die die = new Die(nb);
+        addActor(die, dieBoardLocation);
+        delay(1000);
+        nbRolls++;
+  }
+  
   void startMoving(int nb)
   {
     showStatus("Moving...");
     showPips("Pips: " + nb);
     showScore("# Rolls: " + (nbRolls));
     gp.getPuppet().go(nb);
-  }
-
-  void prepareBeforeRoll() {
-    handBtn.setEnabled(false);
-    if (isGameOver)  // First click after game over
-    {
-      isGameOver = false;
-      nbRolls = 0;
-    }
   }
 
   public void buttonClicked(GGButton btn)
@@ -380,19 +346,7 @@ public class NavigationPane extends GameGrid
     rolling();
   }
 
-  private void roll(int rollNumber)
-  {
-    int nb = rollNumber;
 
-    showStatus("Rolling...");
-    showPips("");
-    System.out.println(nb);
-    removeActors(Die.class);
-    Die die = new Die(nb);
-    addActor(die, dieBoardLocation);
-    delay(1000);
-    nbRolls++;
-  }
 
   public void buttonPressed(GGButton btn)
   {
@@ -405,32 +359,28 @@ public class NavigationPane extends GameGrid
   public void checkAuto() {
     if (isAuto) Monitor.wakeUp();
   }
-
-  public void rolling() {
-    int totalMove = 0;
-    for (int i = 0; i < Integer.parseInt(properties.getProperty("dice.count")); i++) {
-	int dieValue = getDieValue();
-	if (dieValue == RANDOM_ROLL_TAG) {
-	    dieValue = ServicesRandom.get().nextInt(6) + 1;
-	}
-        totalMove += dieValue;
-        roll(dieValue);
-    }
-    
-    String currentPuppetName = gp.getPuppet().getPuppetName();
-    int currentPuppet = Integer.parseInt(currentPuppetName.substring(currentPuppetName.length() - 1)) - 1;
-    if (rolled.get(currentPuppet).get(totalMove) == null) {
-      rolled.get(currentPuppet).put(totalMove, 1);
-    } else {
-      rolled.get(currentPuppet).put(totalMove, rolled.get(currentPuppet).get(totalMove) + 1);
-    }
-
-    startMoving(totalMove);
-  }
   
   public int getDiceNum() {
       return Integer.parseInt(properties.getProperty("dice.count"));
   }
+  
+  public void rolling() {
+	    int totalMove = 0;
+	    for (int i = 0; i < getDiceNum(); i++) {
+		int dieValue = dieController.getDieValue();
+		if (dieValue == RANDOM_ROLL_TAG) {
+		    dieValue = ServicesRandom.get().nextInt(6) + 1;
+		}
+	        totalMove += dieValue;
+	        roll(dieValue);
+	    }
+	    
+	    String currentPuppetName = gp.getPuppet().getPuppetName();
+	    int currentPuppet = Integer.parseInt(currentPuppetName.substring(currentPuppetName.length() - 1)) - 1;
+	    dieController.rolledRecordChange();
+
+	    startMoving(totalMove);
+}
   
   public void moveOpponent() {
       Puppet puppet = gp.getPuppetOnCell(gp.getPuppet().getCellIndex());
@@ -438,6 +388,7 @@ public class NavigationPane extends GameGrid
 	  gp.getAllPuppets().get(gp.getAllPuppets().indexOf(puppet)).moveToPreviousCell();
       }
   }
+  
   
   public void printStat(ArrayList<HashMap<Integer, Integer>> rolled) {
       String currentPuppetName = gp.getPuppet().getPuppetName();
@@ -464,5 +415,9 @@ public class NavigationPane extends GameGrid
   
   public boolean isToggle() {
       return isToggle;
+  }
+  
+  public static int getNbRolls() {
+      return nbRolls;
   }
 }
