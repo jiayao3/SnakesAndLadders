@@ -330,9 +330,17 @@ public class NavigationPane extends GameGrid
       showResult(result);
       if (isAuto) {
 	  if (gp.toggleDecision()) {
+	      if (!isToggle) {
+		  gp.connectionDirectionChange();
+	      }
 	      toggleCheck.setChecked(true);
+	      isToggle = true;
 	  } else {
+	      if (isToggle) {
+		  gp.connectionDirectionChange();
+	      }
 	      toggleCheck.setChecked(false);
+	      isToggle = false;
 	  }
       }
       gp.switchToNextPuppet();

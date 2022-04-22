@@ -1,7 +1,6 @@
 package snakeladder.game;
 
 import ch.aplu.jgamegrid.*;
-import ch.aplu.util.Monitor;
 import snakeladder.utility.PropertiesLoader;
 
 import java.util.ArrayList;
@@ -187,7 +186,7 @@ public class GamePane extends GameGrid
                           countDown++;
                       }
                   } else {
-                      if (connection.cellEnd == currentIndex) {
+                      if (connection.cellStart == currentIndex) {
             	      	  countUp++;
             	      }
                   }
@@ -197,27 +196,33 @@ public class GamePane extends GameGrid
         		  countUp++;
         	      }
         	  } else {
-        	      if (connection.cellEnd == currentIndex) {
+        	      if (connection.cellStart == currentIndex) {
         		  countDown++;
         	      }
         	  }
               }
           }
       }
-      System.out.println(puppet.getCellIndex() + "-" + currentIndex + ": " + countUp + "             " + countDown);
       if (!np.isToggle()) {
-	  if(countUp > countDown) {
+	  System.out.println("no toggle" + puppet.getCellIndex() + "-" + currentIndex + ": " + countUp + "             " + countDown);
+      } else {
+	  System.out.println("toggle" + puppet.getCellIndex() + "-" + currentIndex + ": " + countUp + "             " + countDown);
+      }
+      
+      if (!np.isToggle()) {
+	  if(countUp >= countDown) {
 	      return true;
 	  } else {
 	      return false;
 	  }
       } else if (np.isToggle()){
-	  if (countUp < countDown) {
+	  if (countUp <= countDown) {
 	      return false;
 	  } else {
 	      return true;
 	  }
       }
+      
       return np.isToggle();
   }
 }
