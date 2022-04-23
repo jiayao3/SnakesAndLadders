@@ -327,7 +327,7 @@ public class NavigationPane extends GameGrid
         removeActors(Die.class);
         Die die = new Die(nb);
         addActor(die, dieBoardLocation);
-        delay(1000);
+        delay(1);
         nbRolls++;
   }
   
@@ -377,7 +377,7 @@ public class NavigationPane extends GameGrid
 	    
 	    String currentPuppetName = gp.getPuppet().getPuppetName();
 	    int currentPuppet = Integer.parseInt(currentPuppetName.substring(currentPuppetName.length() - 1)) - 1;
-	    dieController.rolledRecordChange();
+	    dieController.addRolledRecord(totalMove);
 
 	    startMoving(totalMove);
 }
@@ -389,28 +389,32 @@ public class NavigationPane extends GameGrid
       }
   }
   
-  
   public void printStat(ArrayList<HashMap<Integer, Integer>> rolled) {
-      String currentPuppetName = gp.getPuppet().getPuppetName();
-      int currentPuppet = Integer.parseInt(currentPuppetName.substring(currentPuppetName.length() - 1)) - 1;
-      System.out.print(gp.getPuppet().getPuppetName() +" rolled: ");
-      int i = 0;
-      for (Integer roll : rolled.get(currentPuppet).keySet()) {
-        if (i != 0) {
-            System.out.print(", ");
-        }
-	System.out.print(roll + "-" + rolled.get(currentPuppet).get(roll));
-        i++;
+      for (int i = 0; i < rolled.size(); i++) {
+	  System.out.print("Player " + (i + 1) + " rolled: ");
+	  int j = 0;
+	  for (Integer roll : rolled.get(i).keySet()) {
+	        if (j != 0) {
+	            System.out.print(", ");
+	        }
+		System.out.print(roll + "-" + rolled.get(i).get(roll));
+		j++;
+	  }
+	  System.out.println("");
       }
-      System.out.println("");
+
   }
   
   public void printTraverse() {
-      int up = gp.getPuppet().getUpCount();
-      int down = gp.getPuppet().getDownCount();
+      
+      for (Puppet puppet: gp.getAllPuppets()) {
+	  int up = puppet.getUpCount();
+	  int down = puppet.getDownCount();
 
-      System.out.print(gp.getPuppet().getPuppetName() + " traversed: ");
-      System.out.println("up-" + up + ", " + "down-" + down);
+	  System.out.print(puppet.getPuppetName() + " traversed: ");
+	  System.out.println("up-" + up + ", " + "down-" + down);
+      }
+      
   }
   
   public boolean isToggle() {

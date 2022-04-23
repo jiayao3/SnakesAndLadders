@@ -87,5 +87,14 @@ public class DieController {
 		}
 	    }
     }
+    
+    public void addRolledRecord(int totalMove) {
+	    int currentPuppet = GamePane.getCurrentPuppetIndex();
+	    if (rolled.get(currentPuppet).get(totalMove) == null) {
+	      rolled.get(currentPuppet).put(totalMove, 1);
+	    } else {
+	      rolled.get(currentPuppet).put(totalMove, rolled.get(currentPuppet).get(totalMove) + 1);
+	    }
+    }
 
 }

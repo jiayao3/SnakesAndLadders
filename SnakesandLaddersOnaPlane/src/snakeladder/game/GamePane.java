@@ -12,7 +12,7 @@ public class GamePane extends GameGrid
 {
   private NavigationPane np;
   private static int numberOfPlayers = 1;
-  private int currentPuppetIndex = 0;
+  private static int currentPuppetIndex = 0;
   private List<Puppet> puppets =  new ArrayList<>();
   private List<Boolean> playerManualMode;
   private ArrayList<Connection> connections = new ArrayList<Connection>();
@@ -73,7 +73,7 @@ public class GamePane extends GameGrid
   {
     return puppets.get(currentPuppetIndex);
   }
-
+  
   void switchToNextPuppet() {
     currentPuppetIndex = (currentPuppetIndex + 1) % numberOfPlayers;
   }
@@ -152,7 +152,7 @@ public class GamePane extends GameGrid
       return null;
   }
   
-  public int getCurrentPuppetIndex() {
+  public static int getCurrentPuppetIndex() {
       return currentPuppetIndex;
   }
   
