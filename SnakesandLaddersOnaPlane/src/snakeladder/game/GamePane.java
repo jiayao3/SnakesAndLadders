@@ -225,4 +225,11 @@ public class GamePane extends GameGrid
       
       return np.isToggle();
   }
+  
+  public void moveOpponent() {
+      Puppet puppet = getPuppetOnCell(getPuppet().getCellIndex());
+      if (puppet != null) {
+	  getAllPuppets().get(getAllPuppets().indexOf(puppet)).moveToPreviousCell();
+      }
+  }
 }

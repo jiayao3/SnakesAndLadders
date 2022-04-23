@@ -275,7 +275,7 @@ public class NavigationPane extends GameGrid
     }
     else
     {
-      moveOpponent();
+      gp.moveOpponent();
       playSound(GGSound.CLICK);
       showStatus("Done. Click the hand!");
       String result = gp.getPuppet().getPuppetName() + " - pos: " + currentIndex;
@@ -382,12 +382,6 @@ public class NavigationPane extends GameGrid
 	    startMoving(totalMove);
 }
   
-  public void moveOpponent() {
-      Puppet puppet = gp.getPuppetOnCell(gp.getPuppet().getCellIndex());
-      if (puppet != null) {
-	  gp.getAllPuppets().get(gp.getAllPuppets().indexOf(puppet)).moveToPreviousCell();
-      }
-  }
   
   public void printStat(ArrayList<HashMap<Integer, Integer>> rolled) {
       for (int i = 0; i < rolled.size(); i++) {
