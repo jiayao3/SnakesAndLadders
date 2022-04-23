@@ -84,11 +84,13 @@ public class NavigationPane extends GameGrid
   private Properties properties;
   private DieController dieController;
   private GamePlayCallback gamePlayCallback;
+  private StatisticsPrinter statisticsPrinter;
 
   NavigationPane(Properties properties)
   {
     this.properties = properties;
     dieController = new DieController(properties);
+    statisticsPrinter = new StatisticsPrinter();
     int numberOfDice =  //Number of six-sided dice
             (properties.getProperty("dice.count") == null)
                     ? 1  // default
@@ -270,8 +272,8 @@ public class NavigationPane extends GameGrid
       }
       gamePlayCallback.finishGameWithResults(nbRolls % gp.getNumberOfPlayers(), playerPositions);
       gp.resetAllPuppets();
-      printStat(dieController.getRolled());
-      printTraverse();
+      statisticsPrinter.printStat(dieController.getRolled());
+      statisticsPrinter.printTraverse();
     }
     else
     {
@@ -381,35 +383,6 @@ public class NavigationPane extends GameGrid
 
 	    startMoving(totalMove);
 }
-  
-  
-  public void printStat(ArrayList<HashMap<Integer, Integer>> rolled) {
-      for (int i = 0; i < rolled.size(); i++) {
-	  System.out.print("Player " + (i + 1) + " rolled: ");
-	  int j = 0;
-	  for (Integer roll : rolled.get(i).keySet()) {
-	        if (j != 0) {
-	            System.out.print(", ");
-	        }
-		System.out.print(roll + "-" + rolled.get(i).get(roll));
-		j++;
-	  }
-	  System.out.println("");
-      }
-
-  }
-  
-  public void printTraverse() {
-      
-      for (Puppet puppet: gp.getAllPuppets()) {
-	  int up = puppet.getUpCount();
-	  int down = puppet.getDownCount();
-
-	  System.out.print(puppet.getPuppetName() + " traversed: ");
-	  System.out.println("up-" + up + ", " + "down-" + down);
-      }
-      
-  }
   
   public boolean isToggle() {
       return isToggle;

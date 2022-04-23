@@ -13,7 +13,7 @@ public class GamePane extends GameGrid
   private NavigationPane np;
   private static int numberOfPlayers = 1;
   private static int currentPuppetIndex = 0;
-  private List<Puppet> puppets =  new ArrayList<>();
+  private static List<Puppet> puppets =  new ArrayList<>();
   private List<Boolean> playerManualMode;
   private ArrayList<Connection> connections = new ArrayList<Connection>();
   final Location startLocation = new Location(-1, 9);  // outside grid
@@ -82,7 +82,7 @@ public class GamePane extends GameGrid
       currentPuppetIndex = index;
   }
 
-  List<Puppet> getAllPuppets() {
+  static List<Puppet> getAllPuppets() {
     return puppets;
   }
 
