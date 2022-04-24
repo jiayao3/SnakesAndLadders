@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 @SuppressWarnings("serial")
-public class GamePane extends GameGrid
+public class GamePane extends GameGrid implements AutoToggle
 {
   private NavigationPane np;
   private static int numberOfPlayers = 1;
