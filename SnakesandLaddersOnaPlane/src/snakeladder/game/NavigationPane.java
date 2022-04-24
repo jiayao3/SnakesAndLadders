@@ -7,7 +7,6 @@ import snakeladder.game.custom.CustomGGButton;
 import snakeladder.utility.ServicesRandom;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Properties;
 
 @SuppressWarnings("serial")
@@ -234,13 +233,13 @@ public class NavigationPane extends GameGrid
       if (isAuto) {
 	  if (gp.toggleDecision()) {
 	      if (!isToggle) {
-		  gp.connectionDirectionChange();
+		  GamePane.connectionDirectionChange();
 	      }
 	      toggleCheck.setChecked(true);
 	      isToggle = true;
 	  } else {
 	      if (isToggle) {
-		  gp.connectionDirectionChange();
+		  GamePane.connectionDirectionChange();
 	      }
 	      toggleCheck.setChecked(false);
 	      isToggle = false;
