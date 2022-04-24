@@ -168,8 +168,9 @@ public class Puppet extends Actor
         // Check if on connection start
         if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
         {
-          
-            if (detectMin == false) {
+            boolean up = currentCon.getDirection();
+            
+            if (detectMin == false || up) {
         	
         	currentCon.countTraverse();
         	

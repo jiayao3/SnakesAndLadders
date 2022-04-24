@@ -14,13 +14,21 @@ public class Ladder extends Connection
 	if (getReverse()) {
 
 	    GamePane.getPuppet().increaseDownCount();
-	    System.out.println("downdowndown");
 	} else {
 	    GamePane.getPuppet().increaseUpCount();
-	    System.out.println("upupup");
 	}
   }
     
+  
+  public boolean getDirection() {
+      if (getReverse()) {
+	   return false;
+      } else {
+	   return true;
+      }
+  }
+  
+  
   public String status() {
         return "Climbing...";
   }

@@ -14,13 +14,19 @@ public class Snake extends Connection
      setImagePath(BackgroundDrawing.SPRITES_PATH + snakeImages[randomNum]);
    }
    
+   public boolean getDirection() {
+       if (getReverse()) {
+	   return true;
+       } else {
+	   return false;
+       }
+   }
+   
    public void countTraverse() {
  	if (getReverse()) {
  	    GamePane.getPuppet().increaseUpCount();
- 	   System.out.println("upupup");
  	} else {
  	    GamePane.getPuppet().increaseDownCount();
- 	   System.out.println("downdowndown");
  	}
      }
      

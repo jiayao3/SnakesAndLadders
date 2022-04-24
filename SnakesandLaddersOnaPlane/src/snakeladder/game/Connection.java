@@ -66,6 +66,8 @@ public abstract class Connection
   }
   
 
+  public abstract boolean getDirection();
+  
   public abstract void countTraverse();
   
   public abstract String status();

@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import snakeladder.utility.ServicesRandom;
-import ch.aplu.jgamegrid.*;
-import ch.aplu.util.*;
 
 public class DieController {
     

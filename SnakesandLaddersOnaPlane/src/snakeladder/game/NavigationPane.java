@@ -188,7 +188,7 @@ public class NavigationPane extends GameGrid
       public void buttonChecked(GGCheckButton button, boolean checked)
       {
         isAuto = checked;
-        for (Puppet puppet: gp.getAllPuppets()) {
+        for (Puppet puppet: GamePane.getAllPuppets()) {
           puppet.setAuto(isAuto);
         }
         if (isAuto){
@@ -267,10 +267,10 @@ public class NavigationPane extends GameGrid
       handBtn.setEnabled(true);
 
       java.util.List  <String> playerPositions = new ArrayList<>();
-      for (Puppet puppet: gp.getAllPuppets()) {
+      for (Puppet puppet: GamePane.getAllPuppets()) {
         playerPositions.add(puppet.getCellIndex() + "");
       }
-      gamePlayCallback.finishGameWithResults(nbRolls % gp.getNumberOfPlayers(), playerPositions);
+      gamePlayCallback.finishGameWithResults(nbRolls % GamePane.getNumberOfPlayers(), playerPositions);
       gp.resetAllPuppets();
       statisticsPrinter.printStat(dieController.getRolled());
       statisticsPrinter.printTraverse();
@@ -280,7 +280,7 @@ public class NavigationPane extends GameGrid
       gp.moveOpponent();
       playSound(GGSound.CLICK);
       showStatus("Done. Click the hand!");
-      String result = gp.getPuppet().getPuppetName() + " - pos: " + currentIndex;
+      String result = GamePane.getPuppet().getPuppetName() + " - pos: " + currentIndex;
       showResult(result);
       if (isAuto) {
 	  if (gp.toggleDecision()) {
@@ -302,7 +302,7 @@ public class NavigationPane extends GameGrid
 
       if (isAuto) {
         Monitor.wakeUp();
-      } else if (gp.getPuppet().isAuto()) {
+      } else if (GamePane.getPuppet().isAuto()) {
         Monitor.wakeUp();
       } else {
         handBtn.setEnabled(true);
@@ -338,7 +338,7 @@ public class NavigationPane extends GameGrid
     showStatus("Moving...");
     showPips("Pips: " + nb);
     showScore("# Rolls: " + (nbRolls));
-    gp.getPuppet().go(nb);
+    GamePane.getPuppet().go(nb);
   }
 
   public void buttonClicked(GGButton btn)
@@ -376,8 +376,6 @@ public class NavigationPane extends GameGrid
 	        totalMove += dieValue;
 	        roll(dieValue);
 	    }
-	    
-	    String currentPuppetName = gp.getPuppet().getPuppetName();
 	    
 	    dieController.addRolledRecord(totalMove);
 

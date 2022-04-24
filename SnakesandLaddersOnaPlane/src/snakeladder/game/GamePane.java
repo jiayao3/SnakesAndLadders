@@ -145,7 +145,7 @@ public class GamePane extends GameGrid implements AutoToggle
 
   Puppet getPuppetOnCell(int cell) {
       for(Puppet puppet: getAllPuppets()) {
-	  if (cell == puppet.getCellIndex() && puppet.getPuppetName() != this.getPuppet().getPuppetName()) {
+	  if (cell == puppet.getCellIndex() && puppet.getPuppetName() != getPuppet().getPuppetName()) {
 	      return puppet;
 	  }
       }
@@ -180,27 +180,13 @@ public class GamePane extends GameGrid implements AutoToggle
       int currentIndex = puppet.getCellIndex() + np.getDiceNum();
       for (; currentIndex < puppet.getCellIndex() + np.getDiceNum() * 6 + 1; currentIndex++) {
           for (Connection connection: connections) {
-              if (connection instanceof Snake) {
-                  if (!np.isToggle()) {
-                      if (connection.cellStart == currentIndex) {
-                          countDown++;
-                      }
+              if (connection.cellStart == currentIndex) {
+                  if (connection.getDirection()) {
+                      countUp++;
                   } else {
-                      if (connection.cellStart == currentIndex) {
-            	      	  countUp++;
-            	      }
+                      countDown++;
                   }
-              } else {
-        	  if (!np.isToggle()) {
-        	      if (connection.cellStart == currentIndex) {
-        		  countUp++;
-        	      }
-        	  } else {
-        	      if (connection.cellStart == currentIndex) {
-        		  countDown++;
-        	      }
-        	  }
-              }
+            }
           }
       }
       if (!np.isToggle()) {
