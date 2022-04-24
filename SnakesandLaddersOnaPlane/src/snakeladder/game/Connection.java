@@ -1,5 +1,6 @@
 package snakeladder.game;
 
+import ch.aplu.jgamegrid.GGSound;
 import ch.aplu.jgamegrid.Location;
 
 public abstract class Connection
@@ -64,4 +65,10 @@ public abstract class Connection
       return reverse;
   }
   
+
+  public abstract void countTraverse();
+  
+  public abstract String status();
+  
+  public abstract GGSound sound();
 }

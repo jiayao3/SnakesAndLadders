@@ -169,14 +169,9 @@ public class Puppet extends Actor
         if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
         {
           
-          if (currentCon instanceof Snake)
-          {
             if (detectMin == false) {
-        	if (currentCon.getReverse()) {
-        	    upCount++;
-        	} else {
-        	    downCount++;
-        	}
+        	
+        	currentCon.countTraverse();
         	
                 gamePane.setSimulationPeriod(50);
                 y = gamePane.toPoint(currentCon.locStart).y;
@@ -184,9 +179,8 @@ public class Puppet extends Actor
                     dy = gamePane.animationStep;
                 else
                     dy = -gamePane.animationStep;
-                navigationPane.showStatus("Digesting...");
-                navigationPane.playSound(GGSound.MMM);
-                
+                navigationPane.showStatus(currentCon.status());
+                navigationPane.playSound(currentCon.sound());
             }
             else {
         	currentCon = null;
@@ -194,23 +188,6 @@ public class Puppet extends Actor
                 setActEnabled(false);
                 navigationPane.prepareRoll(cellIndex);
             }
-          }
-          else
-          {
-              if (currentCon.getReverse()) {
-        	    downCount++;
-              } else {
-        	    upCount++;
-              }
-            gamePane.setSimulationPeriod(50);
-            y = gamePane.toPoint(currentCon.locStart).y;
-            if (currentCon.locEnd.y > currentCon.locStart.y)
-                dy = gamePane.animationStep;
-            else
-                dy = -gamePane.animationStep;
-            navigationPane.showStatus("Climbing...");
-            navigationPane.playSound(GGSound.BOING);
-          }
         }
         else
         {
@@ -233,6 +210,14 @@ public class Puppet extends Actor
   
   public int getDownCount() {
       return downCount;
+  }
+  
+  public int increaseUpCount() {
+      return upCount++;
+  }
+  
+  public int increaseDownCount() {
+      return downCount++;
   }
 
 }

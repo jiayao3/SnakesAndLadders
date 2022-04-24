@@ -378,7 +378,7 @@ public class NavigationPane extends GameGrid
 	    }
 	    
 	    String currentPuppetName = gp.getPuppet().getPuppetName();
-	    int currentPuppet = Integer.parseInt(currentPuppetName.substring(currentPuppetName.length() - 1)) - 1;
+	    
 	    dieController.addRolledRecord(totalMove);
 
 	    startMoving(totalMove);

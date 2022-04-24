@@ -69,7 +69,7 @@ public class GamePane extends GameGrid
     }
   }
 
-  Puppet getPuppet()
+  static Puppet getPuppet()
   {
     return puppets.get(currentPuppetIndex);
   }
@@ -232,4 +232,5 @@ public class GamePane extends GameGrid
 	  getAllPuppets().get(getAllPuppets().indexOf(puppet)).moveToPreviousCell();
       }
   }
+ 
 }
