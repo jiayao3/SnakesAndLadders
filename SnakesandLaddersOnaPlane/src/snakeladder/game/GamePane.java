@@ -15,7 +15,7 @@ public class GamePane extends GameGrid implements AutoToggle
   private static int currentPuppetIndex = 0;
   private static List<Puppet> puppets =  new ArrayList<>();
   private List<Boolean> playerManualMode;
-  private ArrayList<Connection> connections = new ArrayList<Connection>();
+  private static ArrayList<Connection> connections = new ArrayList<Connection>();
   final Location startLocation = new Location(-1, 9);  // outside grid
   final int animationStep = 10;
   public static final int NUMBER_HORIZONTAL_CELLS = 10;
@@ -156,7 +156,7 @@ public class GamePane extends GameGrid implements AutoToggle
       return currentPuppetIndex;
   }
   
-  public void connectionDirectionChange() {
+  public static void connectionDirectionChange() {
       for(Connection connection: connections) {
 	  connection.switchDirection();
       }

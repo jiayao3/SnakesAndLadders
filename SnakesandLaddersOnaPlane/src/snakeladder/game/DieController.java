@@ -9,7 +9,7 @@ public class DieController {
     
     private java.util.List<java.util.List<Integer>> dieValues = new ArrayList<>();
     private final int RANDOM_ROLL_TAG = -1;
-    private ArrayList<HashMap<Integer, Integer>> rolled = new ArrayList<HashMap<Integer, Integer>> ();
+    private static ArrayList<HashMap<Integer, Integer>> rolled = new ArrayList<HashMap<Integer, Integer>> ();
     private Properties properties;
     
     DieController(Properties properties)
@@ -67,22 +67,16 @@ public class DieController {
 	    System.out.println("dieValues = " + dieValues);
     }
     
-    public ArrayList<HashMap<Integer, Integer>> getRolled() {
+    public static void setRolled(ArrayList<HashMap<Integer, Integer>> newRolled) {
+	rolled = newRolled;
+    }
+    
+    public static ArrayList<HashMap<Integer, Integer>> getRolled() {
 	return rolled;
     }
     
     public int getDiceNum() {
 	      return Integer.parseInt(properties.getProperty("dice.count"));
-    }
-    
-    public void rolledRecordChange() {
-	    rolled = new ArrayList<HashMap<Integer, Integer>> ();
-	    for (int i = 0;  i < Integer.parseInt(properties.getProperty("players.count")); i++) {
-		rolled.add(new HashMap<Integer, Integer> ());
-		for (int j = Integer.parseInt(properties.getProperty("dice.count"));  j < Integer.parseInt(properties.getProperty("dice.count")) * 6 + 1; j++) {
-		    rolled.get(i).put(j, 0);
-		}
-	    }
     }
     
     public void addRolledRecord(int totalMove) {
@@ -93,5 +87,4 @@ public class DieController {
 	      rolled.get(currentPuppet).put(totalMove, rolled.get(currentPuppet).get(totalMove) + 1);
 	    }
     }
-
 }

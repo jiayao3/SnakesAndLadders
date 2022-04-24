@@ -74,13 +74,13 @@ public class NavigationPane extends GameGrid
   private GGTextField statusField;
   private GGTextField resultField;
   private GGTextField scoreField;
-  private boolean isAuto;
+  private static boolean isAuto;
   private GGCheckButton autoChk;
-  private boolean isToggle = false;
+  private static boolean isToggle = false;
   private GGCheckButton toggleCheck =
           new GGCheckButton("Toggle Mode", YELLOW, TRANSPARENT, isToggle);
   private static int nbRolls = 0;
-  private volatile boolean isGameOver = true;
+  private static volatile boolean isGameOver = true;
   private Properties properties;
   private DieController dieController;
   private GamePlayCallback gamePlayCallback;
@@ -120,41 +120,11 @@ public class NavigationPane extends GameGrid
     this.gp = gp;
     dieController.setupDieValues();
   }
-
-  class ManualDieButton implements GGButtonListener {
-    @Override
-    public void buttonPressed(GGButton ggButton) {
-
-    }
-
-    @Override
-    public void buttonReleased(GGButton ggButton) {
-
-    }
-
-    @Override
-    public void buttonClicked(GGButton ggButton) {
-	System.out.println("manual die button clicked");
-	if(!isGameOver) {
-		  System.out.println("Please change dice number before the game");
-	}
-	else {
-	    
-	    if (ggButton instanceof CustomGGButton) {
-	        CustomGGButton customGGButton = (CustomGGButton) ggButton;
-	        int tag = customGGButton.getTag();
-	        System.out.println("manual die button clicked - tag: " + tag);
-	        properties.setProperty("dice.count", Integer.toString(tag));
-	    }
-	    dieController.rolledRecordChange();
-      }
-    }
-  }
   
   
 //add die button to the board
   void addDieButtons() {
-    ManualDieButton manualDieButton = new ManualDieButton();
+    ManualDieButton manualDieButton = new ManualDieButton(properties);
 
     addActor(die1Button, die1Location);
     addActor(die2Button, die2Location);
@@ -171,40 +141,19 @@ public class NavigationPane extends GameGrid
     die6Button.addButtonListener(manualDieButton);
   }
 
-
-
-    
-
-
   void createGui()
   {
+    ToggleCheck toggleCheckButton = new ToggleCheck(properties);
+    AutoCheck autoCheckButton = new AutoCheck(properties);
     addActor(new Actor("sprites/dieboard.gif"), dieBoardLocation);
 
     handBtn.addButtonListener(this);
     addActor(handBtn, handBtnLocation);
     addActor(autoChk, autoChkLocation);
-    autoChk.addCheckButtonListener(new GGCheckButtonListener() {
-      @Override
-      public void buttonChecked(GGCheckButton button, boolean checked)
-      {
-        isAuto = checked;
-        for (Puppet puppet: GamePane.getAllPuppets()) {
-          puppet.setAuto(isAuto);
-        }
-        if (isAuto){
-          Monitor.wakeUp();
-        }
-      }
-    });
+    autoChk.addCheckButtonListener(autoCheckButton);
 
     addActor(toggleCheck, toggleModeLocation);
-    toggleCheck.addCheckButtonListener(new GGCheckButtonListener() {
-      @Override
-      public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
-        isToggle = checked;
-        gp.connectionDirectionChange();
-      }
-    });
+    toggleCheck.addCheckButtonListener(toggleCheckButton);
 
     addDieButtons();
 
@@ -272,7 +221,7 @@ public class NavigationPane extends GameGrid
       }
       gamePlayCallback.finishGameWithResults(nbRolls % GamePane.getNumberOfPlayers(), playerPositions);
       gp.resetAllPuppets();
-      statisticsPrinter.printStat(dieController.getRolled());
+      statisticsPrinter.printStat(DieController.getRolled());
       statisticsPrinter.printTraverse();
     }
     else
@@ -388,5 +337,17 @@ public class NavigationPane extends GameGrid
   
   public static int getNbRolls() {
       return nbRolls;
+  }
+  
+  public static boolean getIsGameOver() {
+      return isGameOver;
+  }
+  
+  public static void setIsToggle(boolean check) {
+      isToggle = check;
+  }
+  
+  public static void setIsAuto(boolean check) {
+      isAuto = check;
   }
 }
