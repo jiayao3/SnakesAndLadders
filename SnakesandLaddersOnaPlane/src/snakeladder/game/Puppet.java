@@ -165,6 +165,7 @@ public class Puppet extends Actor
       nbSteps--;
       if (nbSteps == 0)
       {
+	gamePane.moveOpponent();
         // Check if on connection start
         if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
         {

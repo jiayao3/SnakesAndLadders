@@ -16,4 +16,5 @@ public class ToggleCheck extends Button implements GGCheckButtonListener{
       NavigationPane.setIsToggle(checked);
       GamePane.connectionDirectionChange();
     }
+    
 }

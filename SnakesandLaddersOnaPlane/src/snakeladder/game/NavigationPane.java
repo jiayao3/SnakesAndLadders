@@ -225,7 +225,6 @@ public class NavigationPane extends GameGrid
     }
     else
     {
-      gp.moveOpponent();
       playSound(GGSound.CLICK);
       showStatus("Done. Click the hand!");
       String result = GamePane.getPuppet().getPuppetName() + " - pos: " + currentIndex;
