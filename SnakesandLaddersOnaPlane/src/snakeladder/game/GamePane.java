@@ -21,6 +21,7 @@ public class GamePane extends GameGrid implements AutoToggle
   public static final int NUMBER_HORIZONTAL_CELLS = 10;
   public static final int NUMBER_VERTICAL_CELLS = 10;
   private final int MAX_PUPPET_SPRITES = 4;
+  private boolean moveBack = false;
 
   GamePane(Properties properties)
   {
@@ -76,10 +77,6 @@ public class GamePane extends GameGrid implements AutoToggle
   
   void switchToNextPuppet() {
     currentPuppetIndex = (currentPuppetIndex + 1) % numberOfPlayers;
-  }
-  
-  void switchPuppetTo(int index) {
-      currentPuppetIndex = index;
   }
 
   static List<Puppet> getAllPuppets() {
@@ -215,8 +212,17 @@ public class GamePane extends GameGrid implements AutoToggle
   public void moveOpponent() {
       Puppet puppet = getPuppetOnCell(getPuppet().getCellIndex());
       if (puppet != null) {
-	  getAllPuppets().get(getAllPuppets().indexOf(puppet)).moveToPreviousCell();
+	  moveBack = true;
+	  puppet.go(1);
       }
+      
+  }
+  public boolean getMoveBack() {
+      return moveBack;
+  }
+  
+  public void setMoveBack(boolean moveBack) {
+      this.moveBack = moveBack;
   }
  
 }

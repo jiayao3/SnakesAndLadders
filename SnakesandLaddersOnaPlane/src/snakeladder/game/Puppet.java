@@ -48,10 +48,11 @@ public class Puppet extends Actor
       cellIndex = 0;
       setLocation(gamePane.startLocation);
     }
-    if (nbSteps == navigationPane.getDiceNum()) {
+    if (nbSteps == navigationPane.getDiceNum() && !gamePane.getMoveBack()) {
 	detectMin = true;
     }
     this.nbSteps = nbSteps;
+    
     setActEnabled(true);
   }
 
@@ -90,7 +91,6 @@ public class Puppet extends Actor
   public void moveToPreviousCell() {
       int tens = cellIndex / 10;
       int ones = cellIndex - tens * 10;
-      System.out.println(tens +"  " + ones);
       if (tens % 2 == 0 && ones != 0)     // Cells starting left 01, 21, .. 81
       {
 	  if (ones == 1 && cellIndex > 0)
@@ -111,8 +111,6 @@ public class Puppet extends Actor
 	  }
       }
       cellIndex--;
-      
-      setActEnabled(false);
   }
 
   public void act()
@@ -152,7 +150,12 @@ public class Puppet extends Actor
     // Normal movement
     if (nbSteps > 0)
     {
-      moveToNextCell();
+      if (gamePane.getMoveBack()) {
+	  moveToPreviousCell();
+      }else {
+	  moveToNextCell();
+      }
+
 
 
       if (cellIndex == 100)  // Game over
@@ -165,7 +168,13 @@ public class Puppet extends Actor
       nbSteps--;
       if (nbSteps == 0)
       {
-	gamePane.moveOpponent();
+	if (gamePane.getMoveBack()) {
+	    gamePane.setMoveBack(false);  
+	} else {
+	    gamePane.moveOpponent();
+	}
+
+
         // Check if on connection start
         if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
         {
