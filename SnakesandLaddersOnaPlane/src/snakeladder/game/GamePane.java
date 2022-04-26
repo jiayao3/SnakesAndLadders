@@ -186,11 +186,6 @@ public class GamePane extends GameGrid implements AutoToggle
             }
           }
       }
-      if (!np.isToggle()) {
-	  System.out.println("no toggle" + puppet.getCellIndex() + "-" + currentIndex + ": " + countUp + "             " + countDown);
-      } else {
-	  System.out.println("toggle" + puppet.getCellIndex() + "-" + currentIndex + ": " + countUp + "             " + countDown);
-      }
       
       if (!np.isToggle()) {
 	  if(countUp >= countDown) {
@@ -215,8 +210,8 @@ public class GamePane extends GameGrid implements AutoToggle
 	  moveBack = true;
 	  puppet.go(1);
       }
-      
   }
+  
   public boolean getMoveBack() {
       return moveBack;
   }

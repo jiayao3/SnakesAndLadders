@@ -23,6 +23,7 @@ public class NavigationPane extends GameGrid
 	    Monitor.putSleep();
 	    handBtn.show(1);
 	    rolling();
+
 	    handBtn.show(0);
 	}
 
@@ -272,11 +273,10 @@ public class NavigationPane extends GameGrid
   
         showStatus("Rolling...");
         showPips("");
-        System.out.println(nb);
         removeActors(Die.class);
         Die die = new Die(nb);
         addActor(die, dieBoardLocation);
-        delay(1);
+        delay(1000);
         nbRolls++;
   }
   

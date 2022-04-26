@@ -91,7 +91,7 @@ public class Puppet extends Actor
   public void moveToPreviousCell() {
       int tens = cellIndex / 10;
       int ones = cellIndex - tens * 10;
-      if (tens % 2 == 0 && ones != 0)     // Cells starting left 01, 21, .. 81
+      if (tens % 2 == 0 || tens == 1)     // Cells starting left 01, 21, .. 81
       {
 	  if (ones == 1 && cellIndex > 0)
 	      setLocation(new Location(getX(), getY() + 1));
@@ -100,7 +100,6 @@ public class Puppet extends Actor
       }
       else     // Cells starting left 20, 40, .. 100
       {
-	  
 	  if (ones == 1 && cellIndex > 0) {
 	      setLocation(new Location(getX(), getY() + 1));
 	  }
@@ -150,9 +149,10 @@ public class Puppet extends Actor
     // Normal movement
     if (nbSteps > 0)
     {
-      if (gamePane.getMoveBack()) {
+      boolean moveBack = gamePane.getMoveBack();
+      if (moveBack) {
 	  moveToPreviousCell();
-      }else {
+      } else {
 	  moveToNextCell();
       }
 
@@ -168,7 +168,7 @@ public class Puppet extends Actor
       nbSteps--;
       if (nbSteps == 0)
       {
-	if (gamePane.getMoveBack()) {
+	if (moveBack) {
 	    gamePane.setMoveBack(false);  
 	} else {
 	    gamePane.moveOpponent();
